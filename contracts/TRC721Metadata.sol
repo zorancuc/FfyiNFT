@@ -2,7 +2,7 @@ pragma solidity >=0.5.16;
 
 contract TRC721Metadata {
     
-    function getMetadata(uint256 _tokenId, string) public pure returns (bytes32[4] buffer, uint256 count) {
+    function getMetadata(uint256 _tokenId, string memory) public pure returns (bytes32[4] memory buffer, uint256 count) {
         if (_tokenId == 1) {
             buffer[0] = "Hello World! :D";
             count = 15;

@@ -4,7 +4,7 @@ contract CardBase
 {
     struct Card {
         string  picture;
-        uint    type;
+        uint    cardType;
     }
 
     address public                          addrAdmin;
@@ -16,7 +16,6 @@ contract CardBase
     mapping (uint256 => address) public     cardIndexToApproved;
 
     event Transfer(address from, address to, uint256 cardId);
-    event CardsCreated(uint itmeType, uint quantity);
 
     /**
     * Constructor
@@ -41,15 +40,14 @@ contract CardBase
     * Create Card NFT
     * @param _cardOwner                         Address of new Card's Owner
     * @param _picture                           Link of card's picture
-    * @param _type                              Type of Card
+    * @param _cardType                              Type of Card
     *
      */
-    function _createCard(address _cardOwner, string _picture, uint256 _type) internal
+    function _createCard(address _cardOwner, string memory _picture, uint256 _cardType) internal
     {
-        Card memory _card = Card(_picture, _type);
-
-        uint256 newCardId = cards.push(_card) - 1;
-        _transfer(0, _cardOwner, newCardId);
+        cards.push(Card(_picture, _cardType));
+        uint256 newCardId = cards.length - 1;
+        _transfer(address(0), _cardOwner, newCardId);
     }
 
     /**

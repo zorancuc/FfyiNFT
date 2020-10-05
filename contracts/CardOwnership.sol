@@ -26,7 +26,7 @@ contract CardOwnership is CardBase, TRC721
         bytes4(keccak256('cardsOfOwner(address)')) ^
         bytes4(keccak256('tokenMetadata(uint256,string)'));
 
-    function supportsInterface(bytes4 _interfaceID) external view returns (bool)
+    function supportsInterface(bytes4 _interfaceID) external override view returns (bool)
     {
         return ((_interfaceID == InterfaceSignature_TRC165) || (_interfaceID == InterfaceSignature_TRC721));
     }
@@ -79,7 +79,7 @@ contract CardOwnership is CardBase, TRC721
     * @return count                     Count of Cards owned by Owner
     *
      */
-    function balanceOf(address _owner) public view returns (uint256 count) {
+    function balanceOf(address _owner) public override view returns (uint256 count) {
         return ownershipCardCount[_owner];
     }
 
@@ -93,7 +93,7 @@ contract CardOwnership is CardBase, TRC721
         address _to,
         uint256 _cardId
     )
-        external
+        external override
     {
         // Safety check to prevent against an unexpected 0x0 default.
         require(_to != address(0x0));
@@ -114,7 +114,7 @@ contract CardOwnership is CardBase, TRC721
         address _to,
         uint256 _cardId
     )
-        external
+        external override
     {
         // Only an owner can grant transfer approval.
         require(_owns(msg.sender, _cardId));
@@ -138,7 +138,7 @@ contract CardOwnership is CardBase, TRC721
         address _to,
         uint256 _cardId
     )
-        external
+        external override
     {
         require(_to != address(0));
 
@@ -155,7 +155,7 @@ contract CardOwnership is CardBase, TRC721
     * @return count                     Total Supply of Cards
     *
      */
-    function totalSupply() public view returns (uint) {
+    function totalSupply() public override view returns (uint) {
         return cards.length - 1;
     }
 
@@ -166,7 +166,7 @@ contract CardOwnership is CardBase, TRC721
     *
      */
     function ownerOf(uint256 _cardId)
-        public
+        public override
         view
         returns (address owner)
     {
@@ -182,7 +182,7 @@ contract CardOwnership is CardBase, TRC721
     * @return ownerCards                     Owner's Cards
     *
      */
-    function cardsOfOwner(address _owner) public view returns(uint256[] ownerCards) {
+    function cardsOfOwner(address _owner) public view returns(uint256[] memory ownerCards) {
         uint256 cardCount = balanceOf(_owner);
 
         if (cardCount == 0) {
@@ -204,39 +204,5 @@ contract CardOwnership is CardBase, TRC721
 
             return result;
         }
-    }
-
-    function _memcpy(uint _dest, uint _src, uint _len) private pure {
-        // Copy word-length chunks while possible
-        for(; _len >= 32; _len -= 32) {
-            assembly {
-                mstore(_dest, mload(_src))
-            }
-            _dest += 32;
-            _src += 32;
-        }
-
-        // Copy remaining bytes
-        uint256 mask = 256 ** (32 - _len) - 1;
-        assembly {
-            let srcpart := and(mload(_src), not(mask))
-            let destpart := and(mload(_dest), mask)
-            mstore(_dest, or(destpart, srcpart))
-        }
-    }
-
-    function _toString(bytes32[4] _rawBytes, uint256 _stringLength) private pure returns (string) {
-        string memory outputString = new string(_stringLength);
-        uint256 outputPtr;
-        uint256 bytesPtr;
-
-        assembly {
-            outputPtr := add(outputString, 32)
-            bytesPtr := _rawBytes
-        }
-
-        _memcpy(outputPtr, bytesPtr, _stringLength);
-
-        return outputString;
     }
 }

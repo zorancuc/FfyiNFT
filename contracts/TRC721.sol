@@ -1,10 +1,10 @@
 pragma solidity >=0.5.16;
 
-contract TRC721 {
+interface TRC721 {
     // Required methods
-    function totalSupply() public view returns (uint256 total);
-    function balanceOf(address _owner) public view returns (uint256 balance);
-    function ownerOf(uint256 _tokenId) public view returns (address owner);
+    function totalSupply() external view returns (uint256 total);
+    function balanceOf(address _owner) external view returns (uint256 balance);
+    function ownerOf(uint256 _tokenId) external view returns (address owner);
     function approve(address _to, uint256 _tokenId) external;
     function transfer(address _to, uint256 _tokenId) external;
     function transferFrom(address _from, address _to, uint256 _tokenId) external;

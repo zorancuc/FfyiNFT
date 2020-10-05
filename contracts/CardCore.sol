@@ -6,32 +6,11 @@ contract CardCore is CardMarketplace
 {
     /**
     * Constructor
-    * @param _addrGeneScience               Address of GeneScience contract
     *
      */
     constructor() public
     {
 
-    }
-
-    /**
-    * Set Chest Address
-    * @param _addrChest                      Address of Chest contract
-    *
-     */
-    function setChestAddr(address _addrChest) public onlyAdmin
-    {
-        require(_addrChest != address(0x0));
-        addrChest = _addrChest;
-
-    }
-
-    /**
-    * Test function
-    *
-     */
-    function cardTest() external view returns (address){
-        return addrChest;
     }
 
     /**
@@ -46,11 +25,11 @@ contract CardCore is CardMarketplace
     * Create Card and transfer to Owner
     * @param _cardOwner                         Address of Card Owner
     * @param _picture                           Link of card's picture
-    * @param _type                              Type of card
+    * @param _cardType                              Type of card
     *
      */
-    function createCardToOwner(address _cardOwner, string _picture, uint256 _type) public {
-        _createCard(_cardOwner, _picture, _type);
+    function createCardToOwner(address _cardOwner, string memory _picture, uint256 _cardType) public {
+        _createCard(_cardOwner, _picture, _cardType);
     }
 
     /**
@@ -58,12 +37,12 @@ contract CardCore is CardMarketplace
     * @param _cardId                      Card Id
     *
     * @return picture                       Link of card's picture
-    * @return type                          Type of Card
+    * @return cardType                      Type of Card
     *
      */
-    function getCard(uint _cardId) public view returns(string, uint256)
+    function getCard(uint _cardId) public view returns(string memory , uint256)
     {
         Card memory _card = cards[_cardId];
-        return(_card.picture, _card.type);
+        return(_card.picture, _card.cardType);
     }
 }
