@@ -4,13 +4,15 @@ import "./CardMarketplace.sol";
 
 contract CardCore is CardMarketplace
 {
+
+    address public poolAddr;
     /**
     * Constructor
     *
      */
-    constructor() public
+    constructor(address _poolAddr) public
     {
-
+        poolAddr = _poolAddr;
     }
 
     /**
@@ -29,6 +31,7 @@ contract CardCore is CardMarketplace
     *
      */
     function createCardToOwner(address _cardOwner, string memory _picture, uint256 _cardType) public {
+        require(msg.sender == poolAddr, 'CardCord: Permission Denied');
         _createCard(_cardOwner, _picture, _cardType);
     }
 
