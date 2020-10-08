@@ -7,17 +7,22 @@ async function main() {
   const ffyicardContract = await ffyicard.deploy(proxyAddress);
 
   const ffyicardFactory = await ethers.getContract('FfyiCardFactory');
+  const ffyicardAuction = await ethers.getContract('FfyiCardAuction');
 
   const ffyicardFactoryContract = await ffyicardFactory.deploy(proxyAddress, ffyicardContract.address);
+  const ffyicardAuctionContract = await ffyicardAuction.deploy(ffyicardContract.address);
   // The address the Contract WILL have once mined
   console.log(ffyicardContract.address);
   // The transaction that was sent to the network to deploy the Contract
   console.log(ffyicardContract.deployTransaction.hash);
 
   console.log(ffyicardFactoryContract.address);
+  console.log(ffyicardAuctionContract.address);
+
   // The contract is NOT deployed yet; we must wait until it is mined
   await ffyicardContract.deployed();
   await ffyicardFactoryContract.deployed();
+  await ffyicardAuctionContract.deployed();
 }
 
 main()
