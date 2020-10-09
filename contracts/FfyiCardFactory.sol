@@ -17,16 +17,11 @@ contract FfyiCardFactory is Factory, Ownable {
   /**
    * Enforce the existence of only 100 OpenSea ffyiCards.
    */
-  uint256 CREATURE_SUPPLY = 100;
-
+  uint256 FFYICARD_SUPPLY = 100;
+  uint256 NUM_OPTIONS = 3;
   /**
    * Three different options for minting FfyiCards (basic, premium, and gold).
    */
-  uint256 NUM_OPTIONS = 3;
-  uint256 SINGLE_CREATURE_OPTION = 0;
-  uint256 MULTIPLE_CREATURE_OPTION = 1;
-  uint256 LOOTBOX_OPTION = 2;
-  uint256 NUM_CREATURES_IN_MULTIPLE_CREATURE_OPTION = 4;
 
   constructor(address _proxyRegistryAddress, address _nftAddress) public {
     proxyRegistryAddress = _proxyRegistryAddress;
@@ -63,37 +58,31 @@ contract FfyiCardFactory is Factory, Ownable {
     }
   }
 
-  function mint(uint256 _optionId, address _toAddress) public override {
+  function mint(uint256 _numItem, address _toAddress) public override {
     // Must be sent from the owner proxy or owner.
     ProxyRegistry proxyRegistry = ProxyRegistry(proxyRegistryAddress);
     assert(address(proxyRegistry.proxies(owner())) == msg.sender || owner() == msg.sender);
-    require(canMint(_optionId));
+    require(canMint(_numItem));
 
     FfyiCard openSeaFfyiCard = FfyiCard(nftAddress);
-    if (_optionId == SINGLE_CREATURE_OPTION) {
+    for (uint256 i = 0; i < _numItem; i++) {
       openSeaFfyiCard.mintTo(_toAddress);
-    } else if (_optionId == MULTIPLE_CREATURE_OPTION) {
-      for (uint256 i = 0; i < NUM_CREATURES_IN_MULTIPLE_CREATURE_OPTION; i++) {
-        openSeaFfyiCard.mintTo(_toAddress);
-      }
     }
   }
 
-  function canMint(uint256 _optionId) public override view returns (bool) {
-    if (_optionId >= NUM_OPTIONS) {
+  function canMint(uint256 _numItem) public override view returns (bool) {
+    if (_numItem == 0) {
+      return false;
+    }
+
+    if (_numItem == 0) {
       return false;
     }
 
     FfyiCard openSeaFfyiCard = FfyiCard(nftAddress);
     uint256 ffyiCardSupply = openSeaFfyiCard.totalSupply();
 
-    uint256 numItemsAllocated = 0;
-    if (_optionId == SINGLE_CREATURE_OPTION) {
-      numItemsAllocated = 1;
-    } else if (_optionId == MULTIPLE_CREATURE_OPTION) {
-      numItemsAllocated = NUM_CREATURES_IN_MULTIPLE_CREATURE_OPTION;
-    }
-    return ffyiCardSupply < (CREATURE_SUPPLY - numItemsAllocated);
+    return ffyiCardSupply < (FFYICARD_SUPPLY - _numItem);
   }
 
   function tokenURI(uint256 _optionId) external override view returns (string memory) {
